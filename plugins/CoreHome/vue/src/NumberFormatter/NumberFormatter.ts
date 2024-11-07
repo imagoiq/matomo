@@ -1,0 +1,217 @@
+/*!
+ * Matomo - free/libre analytics platform
+ *
+ * @link    https://matomo.org
+ * @license https://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
+ */
+
+import Matomo from '../Matomo/Matomo';
+
+const { $ } = window;
+
+/**
+ *  Number Formatter for formatting numbers, percent and currencies values
+ *
+ * @type {object}
+ */
+class NumberFormatter {
+  defaultMinFractionDigits = 0;
+
+  defaultMaxFractionDigits = 2;
+
+  /**
+   * Formats the given numeric value with the given pattern
+   *
+   * @param value
+   * @param pattern
+   * @returns {string}
+   */
+  private format(
+    val: string|number,
+    formatPattern: string,
+    maxFractionDigits: number,
+    minFractionDigits: number,
+  ): string {
+    if (!$.isNumeric(val)) {
+      return String(val);
+    }
+
+    let value = (val as number);
+
+    let pattern = formatPattern || Matomo.numbers.patternNumber;
+
+    const patterns = pattern.split(';');
+    if (patterns.length === 1) {
+      // No explicit negative pattern was provided, construct it.
+      patterns.push(`-${patterns[0]}`);
+    }
+
+    // Ensure that the value is positive and has the right number of digits.
+    const negative = value < 0;
+    pattern = negative ? patterns[1] : patterns[0];
+
+    value = Math.abs(value);
+
+    // round value to maximal number of fraction digits
+    if (maxFractionDigits >= 0) {
+      const factionFactor = 10 ** maxFractionDigits;
+      value = Math.round(value * factionFactor) / factionFactor;
+    }
+
+    // Split the number into major and minor digits.
+    const valueParts = value.toString().split('.');
+    let majorDigits = valueParts[0];
+
+    // Account for maxFractionDigits = 0, where the number won't
+    // have a decimal point, and $valueParts[1] won't be set.
+    let minorDigits = valueParts[1] || '';
+
+    const usesGrouping = (pattern.indexOf(',') !== -1);
+
+    // if pattern has number groups, parse them.
+    if (usesGrouping) {
+      const primaryGroupMatches = pattern.match(/#+0/);
+      const primaryGroupSize = primaryGroupMatches?.[0].length || 0;
+      let secondaryGroupSize = primaryGroupMatches?.[0].length || 0;
+      const numberGroups = pattern.split(',');
+
+      // check for distinct secondary group size.
+      if (numberGroups.length > 2) {
+        secondaryGroupSize = numberGroups[1].length;
+      }
+
+      // Reverse the major digits, since they are grouped from the right.
+      const digits = majorDigits.split('').reverse();
+      // Group the major digits.
+      let groups = [];
+
+      groups.push(digits.splice(0, primaryGroupSize).reverse().join(''));
+
+      while (digits.length) {
+        groups.push(digits.splice(0, secondaryGroupSize).reverse().join(''));
+      }
+
+      // Reverse the groups and the digits inside of them.
+      groups = groups.reverse();
+      // Reconstruct the major digits.
+      majorDigits = groups.join(',');
+    }
+
+    if (minFractionDigits > 0) {
+      // Strip any trailing zeroes.
+      minorDigits = minorDigits.replace(/0+$/, '');
+      if (
+        minorDigits.length < minFractionDigits
+        && minorDigits.length < maxFractionDigits
+      ) {
+        // Now there are too few digits, re-add trailing zeroes
+        // until the desired length is reached.
+        const neededZeroes = minFractionDigits - minorDigits.length;
+        minorDigits += (new Array(neededZeroes + 1)).join('0');
+      }
+    }
+
+    // Assemble the final number and insert it into the pattern.
+    let result = minorDigits ? `${majorDigits}.${minorDigits}` : majorDigits;
+    result = pattern.replace(/#(?:[.,]#+)*0(?:[,.][0#]+)*/, result);
+
+    // Localize the number.
+    return this.replaceSymbols(result);
+  }
+
+  /**
+   * Replaces the placeholders with real symbols
+   *
+   * @param value
+   * @returns {string}
+   */
+  private replaceSymbols(value: string): string {
+    const replacements = {
+      '.': Matomo.numbers.symbolDecimal,
+      ',': Matomo.numbers.symbolGroup,
+      '+': Matomo.numbers.symbolPlus,
+      '-': Matomo.numbers.symbolMinus,
+      '%': Matomo.numbers.symbolPercent,
+    };
+
+    let newValue = '';
+    const valueParts = value.split('');
+
+    valueParts.forEach((val) => {
+      let valueReplaced = val;
+
+      Object.entries(replacements).some(([char, replacement]) => {
+        if (valueReplaced.indexOf(char) !== -1) {
+          valueReplaced = valueReplaced.replace(char, replacement);
+          return true;
+        }
+
+        return false;
+      });
+
+      newValue += valueReplaced;
+    });
+
+    return newValue;
+  }
+
+  private valOrDefault(def: number, val?: number): number {
+    if (typeof val === 'undefined') {
+      return def;
+    }
+
+    return val;
+  }
+
+  public formatNumber(
+    value: string|number,
+    maxFractionDigits?: number,
+    minFractionDigits?: number,
+  ): string {
+    return this.format(
+      value,
+      Matomo.numbers.patternNumber,
+      this.valOrDefault(this.defaultMaxFractionDigits, maxFractionDigits),
+      this.valOrDefault(this.defaultMinFractionDigits, minFractionDigits),
+    );
+  }
+
+  public formatPercent(
+    value: string|number,
+    maxFractionDigits?: number,
+    minFractionDigits?: number,
+  ): string {
+    return this.format(
+      value,
+      Matomo.numbers.patternPercent,
+      this.valOrDefault(this.defaultMaxFractionDigits, maxFractionDigits),
+      this.valOrDefault(this.defaultMinFractionDigits, minFractionDigits),
+    );
+  }
+
+  public formatCurrency(
+    value: string|number,
+    currency: string,
+    maxFractionDigits?: number,
+    minFractionDigits?: number,
+  ): string {
+    const formatted = this.format(
+      value,
+      Matomo.numbers.patternCurrency,
+      this.valOrDefault(this.defaultMaxFractionDigits, maxFractionDigits),
+      this.valOrDefault(this.defaultMinFractionDigits, minFractionDigits),
+    );
+    return formatted.replace('¤', currency);
+  }
+
+  public formatEvolution(
+    evolution: string|number,
+    maxFractionDigits?: number,
+    minFractionDigits?: number,
+  ): string {
+    const formattedEvolution = this.formatPercent(evolution, maxFractionDigits, minFractionDigits);
+    return `${evolution as number > 0 ? Matomo.numbers.symbolPlus : ''}${formattedEvolution}`;
+  }
+}
+
+export default new NumberFormatter();

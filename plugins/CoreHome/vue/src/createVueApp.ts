@@ -8,6 +8,7 @@
 import { createApp } from 'vue';
 import { translate, translateOrDefault } from './translate';
 import { externalLink, externalRawLink } from './externalLink';
+import { formatNumber, formatPercent, formatCurrency } from './NumberFormatter';
 
 export default function createVueApp(
   ...args: Parameters<typeof createApp>
@@ -18,5 +19,8 @@ export default function createVueApp(
   app.config.globalProperties.translateOrDefault = translateOrDefault;
   app.config.globalProperties.externalLink = externalLink;
   app.config.globalProperties.externalRawLink = externalRawLink;
+  app.config.globalProperties.formatNumber = formatNumber;
+  app.config.globalProperties.formatPercent = formatPercent;
+  app.config.globalProperties.formatCurrency = formatCurrency;
   return app;
 }

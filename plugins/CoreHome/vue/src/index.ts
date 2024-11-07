@@ -12,6 +12,7 @@ import './Periods/Month';
 import './Periods/Year';
 import './Periods/Range';
 import './AjaxHelper/AjaxHelper.adapter';
+import './NumberFormatter/NumberFormatter.adapter';
 import './PopoverHandler/PopoverHandler';
 import './zenMode';
 import Matomo from './Matomo/Matomo';
@@ -34,6 +35,7 @@ export { setCookie, getCookie, deleteCookie } from './CookieHelper/CookieHelper'
 export { default as MatomoUrl } from './MatomoUrl/MatomoUrl';
 export { Matomo };
 export * from './Periods';
+export * from './NumberFormatter';
 export { default as DropdownMenu } from './DropdownMenu/DropdownMenu';
 export { default as FocusAnywhereButHere } from './FocusAnywhereButHere/FocusAnywhereButHere';
 export { default as FocusIf } from './FocusIf/FocusIf';
