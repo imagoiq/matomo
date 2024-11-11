@@ -101,18 +101,28 @@ class EventDispatcher
 
         if (empty($plugins)) {
             $plugins = $manager->getPluginsLoadedAndActivated();
-        }
+        } else {
+            $pluginMap = [];
 
-        $callbacks = array();
+            foreach ($plugins as $plugin) {
+                if (is_string($plugin)) {
+                    $pluginName = $plugin;
+                    $plugin = $manager->getLoadedPlugin($pluginName);
+                } else {
+                    $pluginName = $plugin->getPluginName();
+                }
 
-        // collect all callbacks to execute
-        foreach ($plugins as $pluginName) {
-            if (!is_string($pluginName)) {
-                $pluginName = $pluginName->getPluginName();
+                $pluginMap[$pluginName] = $plugin;
             }
 
+            $plugins = $pluginMap;
+        }
+
+        $callbacks = [];
+
+        // collect all callbacks to execute
+        foreach ($plugins as $pluginName => $plugin) {
             if (!isset($this->pluginHooks[$pluginName])) {
-                $plugin = $manager->getLoadedPlugin($pluginName);
                 $this->pluginHooks[$pluginName] = $plugin->registerEvents();
             }
 
@@ -122,8 +132,7 @@ class EventDispatcher
                 list($pluginFunction, $callbackGroup) = $this->getCallbackFunctionAndGroupNumber($hooks[$eventName]);
 
                 if (is_string($pluginFunction)) {
-                    $plugin = $manager->getLoadedPlugin($pluginName);
-                    $callbacks[$callbackGroup][] = array($plugin, $pluginFunction) ;
+                    $callbacks[$callbackGroup][] = [$plugin, $pluginFunction];
                 } else {
                     $callbacks[$callbackGroup][] = $pluginFunction;
                 }
