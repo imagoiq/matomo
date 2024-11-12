@@ -288,7 +288,7 @@ import {
   EnrichedHeadline,
   ActivityIndicator,
   MatomoUrl,
-  getFormattedEvolution,
+  calculateAndFormatEvolution,
   externalRawLink,
 } from 'CoreHome';
 import MultisitesSite from '../MultisitesSite/MultisitesSite.vue';
@@ -385,7 +385,7 @@ export default defineComponent({
         this.date,
         `${state.lastVisits}`,
         state.lastVisitsDate,
-        getFormattedEvolution(state.totalVisits, state.lastVisits),
+        calculateAndFormatEvolution(state.totalVisits, state.lastVisits),
       );
     },
     loadingMessage() {

@@ -208,9 +208,48 @@ class NumberFormatter {
     evolution: string|number,
     maxFractionDigits?: number,
     minFractionDigits?: number,
+    noSign?: boolean,
   ): string {
+    if (noSign) {
+      return this.formatPercent(
+        Math.abs(evolution as number),
+        maxFractionDigits,
+        minFractionDigits,
+      );
+    }
     const formattedEvolution = this.formatPercent(evolution, maxFractionDigits, minFractionDigits);
     return `${evolution as number > 0 ? Matomo.numbers.symbolPlus : ''}${formattedEvolution}`;
+  }
+
+  public calculateAndFormatEvolution(
+    currentValue: string|number,
+    pastValue: string|number,
+    noSign?: boolean,
+  ) {
+    const pastValueParsed = parseInt(pastValue as string, 10);
+    const currentValueParsed = parseInt(currentValue as string, 10) - pastValueParsed;
+
+    let evolution: number;
+
+    if (currentValueParsed === 0 || Number.isNaN(currentValueParsed)) {
+      evolution = 0;
+    } else if (pastValueParsed === 0 || Number.isNaN(pastValueParsed)) {
+      evolution = 100;
+    } else {
+      evolution = (currentValueParsed / pastValueParsed) * 100;
+    }
+
+    let maxFractionDigits = 3;
+
+    if (Math.abs(evolution) > 100) {
+      maxFractionDigits = 0;
+    } else if (Math.abs(evolution) > 10) {
+      maxFractionDigits = 1;
+    } else if (Math.abs(evolution) > 1) {
+      maxFractionDigits = 2;
+    }
+
+    return this.formatEvolution(evolution, maxFractionDigits, 0, noSign);
   }
 }
 

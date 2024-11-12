@@ -276,5 +276,7 @@ declare module '@vue/runtime-core' {
     formatNumber: (val: string, maxFractionDigits?: number, minFractionDigits?: number) => string;
     formatPercent: (val: string, maxFractionDigits?: number, minFractionDigits?: number) => string;
     formatCurrency: (val: string, cur: string, maxFractionDigits?: number, minFractionDigits?: number) => string;
+    formatEvolution: (val: string, cur: string, maxFractionDigits?: number, minFractionDigits?: number, noSign?: boolean) => string;
+    calculateAndFormatEvolution: (valCur: string, valPast: string, noSign?: boolean) => string;
   }
 }

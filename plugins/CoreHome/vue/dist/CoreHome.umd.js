@@ -133,7 +133,6 @@ __webpack_require__.d(__webpack_exports__, "importPluginUmd", function() { retur
 __webpack_require__.d(__webpack_exports__, "useExternalPluginComponent", function() { return /* reexport */ useExternalPluginComponent; });
 __webpack_require__.d(__webpack_exports__, "DirectiveUtilities", function() { return /* reexport */ directiveUtilities; });
 __webpack_require__.d(__webpack_exports__, "debounce", function() { return /* reexport */ debounce; });
-__webpack_require__.d(__webpack_exports__, "getFormattedEvolution", function() { return /* reexport */ getFormattedEvolution; });
 __webpack_require__.d(__webpack_exports__, "clone", function() { return /* reexport */ clone; });
 __webpack_require__.d(__webpack_exports__, "VueEntryContainer", function() { return /* reexport */ VueEntryContainer; });
 __webpack_require__.d(__webpack_exports__, "ActivityIndicator", function() { return /* reexport */ ActivityIndicator; });
@@ -165,6 +164,8 @@ __webpack_require__.d(__webpack_exports__, "NumberFormatter", function() { retur
 __webpack_require__.d(__webpack_exports__, "formatNumber", function() { return /* reexport */ utilities_formatNumber; });
 __webpack_require__.d(__webpack_exports__, "formatPercent", function() { return /* reexport */ utilities_formatPercent; });
 __webpack_require__.d(__webpack_exports__, "formatCurrency", function() { return /* reexport */ utilities_formatCurrency; });
+__webpack_require__.d(__webpack_exports__, "formatEvolution", function() { return /* reexport */ utilities_formatEvolution; });
+__webpack_require__.d(__webpack_exports__, "calculateAndFormatEvolution", function() { return /* reexport */ calculateAndFormatEvolution; });
 __webpack_require__.d(__webpack_exports__, "DropdownMenu", function() { return /* reexport */ DropdownMenu; });
 __webpack_require__.d(__webpack_exports__, "FocusAnywhereButHere", function() { return /* reexport */ FocusAnywhereButHere; });
 __webpack_require__.d(__webpack_exports__, "FocusIf", function() { return /* reexport */ FocusIf; });
@@ -2372,9 +2373,40 @@ var NumberFormatter_NumberFormatter = /*#__PURE__*/function () {
     }
   }, {
     key: "formatEvolution",
-    value: function formatEvolution(evolution, maxFractionDigits, minFractionDigits) {
+    value: function formatEvolution(evolution, maxFractionDigits, minFractionDigits, noSign) {
+      if (noSign) {
+        return this.formatPercent(Math.abs(evolution), maxFractionDigits, minFractionDigits);
+      }
+
       var formattedEvolution = this.formatPercent(evolution, maxFractionDigits, minFractionDigits);
       return "".concat(evolution > 0 ? Matomo_Matomo.numbers.symbolPlus : '').concat(formattedEvolution);
+    }
+  }, {
+    key: "calculateAndFormatEvolution",
+    value: function calculateAndFormatEvolution(currentValue, pastValue, noSign) {
+      var pastValueParsed = parseInt(pastValue, 10);
+      var currentValueParsed = parseInt(currentValue, 10) - pastValueParsed;
+      var evolution;
+
+      if (currentValueParsed === 0 || Number.isNaN(currentValueParsed)) {
+        evolution = 0;
+      } else if (pastValueParsed === 0 || Number.isNaN(pastValueParsed)) {
+        evolution = 100;
+      } else {
+        evolution = currentValueParsed / pastValueParsed * 100;
+      }
+
+      var maxFractionDigits = 3;
+
+      if (Math.abs(evolution) > 100) {
+        maxFractionDigits = 0;
+      } else if (Math.abs(evolution) > 10) {
+        maxFractionDigits = 1;
+      } else if (Math.abs(evolution) > 1) {
+        maxFractionDigits = 2;
+      }
+
+      return this.formatEvolution(evolution, maxFractionDigits, 0, noSign);
     }
   }]);
 
@@ -2651,6 +2683,12 @@ function utilities_formatPercent(val, maxFractionDigits, minFractionDigits) {
 function utilities_formatCurrency(val, cur, maxFractionDigits, minFractionDigits) {
   return src_NumberFormatter_NumberFormatter.formatCurrency(val, cur, maxFractionDigits, minFractionDigits);
 }
+function utilities_formatEvolution(val, maxFractionDigits, minFractionDigits, noSign) {
+  return src_NumberFormatter_NumberFormatter.formatEvolution(val, maxFractionDigits, minFractionDigits, noSign);
+}
+function calculateAndFormatEvolution(valCur, valPrev, noSign) {
+  return src_NumberFormatter_NumberFormatter.calculateAndFormatEvolution(valCur, valPrev, noSign);
+}
 // CONCATENATED MODULE: ./plugins/CoreHome/vue/src/NumberFormatter/index.ts
 /*!
  * Matomo - free/libre analytics platform
@@ -2681,6 +2719,8 @@ function createVueApp() {
   app.config.globalProperties.formatNumber = utilities_formatNumber;
   app.config.globalProperties.formatPercent = utilities_formatPercent;
   app.config.globalProperties.formatCurrency = utilities_formatCurrency;
+  app.config.globalProperties.formatEvolution = utilities_formatEvolution;
+  app.config.globalProperties.calculateAndFormatEvolution = calculateAndFormatEvolution;
   return app;
 }
 // CONCATENATED MODULE: ./plugins/CoreHome/vue/src/importPluginUmd.ts
@@ -2847,35 +2887,6 @@ function debounce(fn) {
       fn.call.apply(fn, [_this].concat(args));
     }, delayInMs);
   };
-}
-// CONCATENATED MODULE: ./plugins/CoreHome/vue/src/getFormattedEvolution.ts
-/*!
- * Matomo - free/libre analytics platform
- *
- * @link    https://matomo.org
- * @license https://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- */
-
-
-function calculateEvolution(currentValue, pastValue) {
-  var pastValueParsed = parseInt(pastValue, 10);
-  var currentValueParsed = parseInt(currentValue, 10) - pastValueParsed;
-  var evolution;
-
-  if (currentValueParsed === 0 || Number.isNaN(currentValueParsed)) {
-    evolution = 0;
-  } else if (pastValueParsed === 0 || Number.isNaN(pastValueParsed)) {
-    evolution = 100;
-  } else {
-    evolution = currentValueParsed / pastValueParsed * 100;
-  }
-
-  return evolution;
-}
-
-function getFormattedEvolution(currentValue, pastValue) {
-  var evolution = calculateEvolution(currentValue, pastValue);
-  return src_NumberFormatter_NumberFormatter.formatEvolution(evolution);
 }
 // CONCATENATED MODULE: ./plugins/CoreHome/vue/src/clone.ts
 /*!
@@ -12386,7 +12397,6 @@ function scrollToAnchorInUrl() {
  * @link    https://matomo.org
  * @license https://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
-
 
 
 

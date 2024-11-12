@@ -86,7 +86,9 @@ describe('CoreHome/NumberFormatter', () => {
     ['en', 5, 0, 0, '5'],
     ['en', -5, 0, 3, '-5'],
     ['en', 5.299, 0, 0, '5'],
-    ['en', 5.299, 3, 0, '5.299'],
+    ['en', 5.2992, 3, 0, '5.299'],
+    ['en', 5.6666666666667, 1, 0, '5.7'],
+    ['en', 5.07, 1, 0, '5.1'],
     ['en', -50, 3, 3, '-50.000'],
     ['en', 5000, 0, 0, '5,000'],
     ['en', 5000000, 0, 0, '5,000,000'],
@@ -120,7 +122,7 @@ describe('CoreHome/NumberFormatter', () => {
     ['en', 5, 0, 0, '5%'],
     ['en', -5, 0, 3, '-5%'],
     ['en', 5.299, 0, 0, '5%'],
-    ['en', 5.299, 3, 0, '5.299%'],
+    ['en', 5.2992, 3, 0, '5.299%'],
     ['en', -50, 3, 3, '-50.000%'],
     ['en', -50, 1, 1, '-50.0%'],
     ['en', -50.1, 3, 3, '-50.100%'],
@@ -156,7 +158,7 @@ describe('CoreHome/NumberFormatter', () => {
     ['en', 5, '$', 0, 0, '$5'],
     ['en', -5, '$', 0, 3, '-$5'],
     ['en', 5.299, '$', 0, 0, '$5'],
-    ['en', 5.299, '$', 3, 0, '$5.299'],
+    ['en', 5.2992, '$', 3, 0, '$5.299'],
     ['en', -50, '$', 3, 3, '-$50.000'],
     ['en', -50, '$', 1, 1, '-$50.0'],
     ['en', -50.1, '$', 3, 3, '-$50.100'],
@@ -218,6 +220,31 @@ describe('CoreHome/NumberFormatter', () => {
       window.piwik.numbers = formats[lang];
 
       const result = NumberFormatter.formatEvolution(input as number, maxFractionDigits as number, minFractionDigits as number);
+
+      expect(result).toEqual(expected);
+    })
+  });
+
+  const calculateAndFormatEvolutionTestData: Array<Array<any>> = [
+    // we test only english, as other formats are already covered by formatEvolution tests
+    ['en', 2, 1, false, '+100%'],
+    ['en', 25, 100, false, '-75%'],
+    ['en', 1, 3, false, '-66.7%'],
+    ['en', 1, 3, true, '66.7%'],
+    ['en', 10001, 9883, false, '+1.19%'],
+    ['en', 100001, 100000, false, '+0.001%'],
+    ['en', 100001, 100000, true, '0.001%'],
+    ['en', 10000001, 10000000, false, '+0%'],
+  ];
+
+  calculateAndFormatEvolutionTestData.forEach((testdata) => {
+    const [ lang, input1, input2, noSign, expected ] = testdata;
+
+    it(`should correctly format evolution with (${lang}, ${input1}, ${input2}, ${noSign})`, () => {
+
+      window.piwik.numbers = formats[lang];
+
+      const result = NumberFormatter.calculateAndFormatEvolution(input1 as number, input2 as number, noSign);
 
       expect(result).toEqual(expected);
     })

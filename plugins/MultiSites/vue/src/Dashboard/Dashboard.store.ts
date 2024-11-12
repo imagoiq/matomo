@@ -14,6 +14,7 @@ import {
   AjaxHelper,
   translate,
   Site,
+  NumberFormatter,
 } from 'CoreHome';
 
 interface SiteWithMetrics extends Site {
@@ -74,8 +75,6 @@ interface GetAllWithGroupsResponse {
   sites: SiteWithMetrics[];
   totals: SiteTotals;
 }
-
-const { NumberFormatter } = window;
 
 class DashboardStore {
   private privateState = reactive<DashboardStoreState>({
@@ -157,7 +156,7 @@ class DashboardStore {
         if (this.state.value.sortColumn === 'nb_visits'
           || this.state.value.sortColumn === 'visits_evolution'
         ) {
-          previousTotal = NumberFormatter.formatNumber(site.previous_nb_visits);
+          previousTotal = NumberFormatter.formatNumber(site.previous_nb_visits! as string);
           currentTotal = NumberFormatter.formatNumber(site.nb_visits);
           evolution = NumberFormatter.formatPercent(site.visits_evolution);
           metricName = translate('General_ColumnNbVisits');
@@ -191,7 +190,7 @@ class DashboardStore {
 
         if (this.state.value.sortColumn === 'revenue_evolution') {
           previousTotal = NumberFormatter.formatCurrency(
-            site.previous_Goal_revenue,
+            site.previous_Goal_revenue! as string,
             site.currencySymbol,
           );
           currentTotal = NumberFormatter.formatCurrency(site.revenue, site.currencySymbol);
