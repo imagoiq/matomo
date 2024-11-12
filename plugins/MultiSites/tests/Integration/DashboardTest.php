@@ -61,7 +61,6 @@ class DashboardTest extends IntegrationTestCase
             'nb_visits' => 0,
             'nb_actions' => 0,
             'revenue' => 0,
-            'nb_visits_lastdate' => 0,
             'hits' => 0,
         );
         $this->assertEquals($expectedTotals, $dashboard->getTotals());

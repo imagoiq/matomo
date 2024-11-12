@@ -44,8 +44,8 @@ interface SiteTotals {
   nb_pageviews: string|number;
   hits: string|number;
   nb_visits: string|number;
-  nb_visits_lastdate: string|number;
   revenue: string|number;
+  previous_nb_visits: string|number;
 }
 
 interface DashboardStoreState {
@@ -263,7 +263,7 @@ class DashboardStore {
     this.privateState.totalHits = report.totals.hits;
     this.privateState.totalActions = report.totals.nb_actions;
     this.privateState.totalRevenue = report.totals.revenue;
-    this.privateState.lastVisits = report.totals.nb_visits_lastdate;
+    this.privateState.lastVisits = report.totals.previous_nb_visits;
     this.privateState.sites = allSites;
     this.privateState.numberOfSites = report.numSites;
     this.privateState.lastVisitsDate = report.lastDate;

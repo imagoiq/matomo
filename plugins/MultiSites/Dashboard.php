@@ -124,7 +124,6 @@ class Dashboard
             'previous_hits'         => $this->sitesByGroup->getMetadata('previous_total_hits'),
             'previous_nb_actions'   => $this->sitesByGroup->getMetadata('previous_total_nb_actions'),
             'previous_revenue'      => $this->sitesByGroup->getMetadata('previous_total_revenue'),
-            'nb_visits_lastdate'    => $this->sitesByGroup->getMetadata('total_nb_visits_lastdate') ? : 0,
         ];
         $this->formatMetrics($totals);
         return $totals;
