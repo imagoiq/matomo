@@ -11,16 +11,19 @@ namespace Piwik\Plugins\Installation;
 
 use Exception;
 use Piwik\Access;
+use Piwik\Application\Kernel\GlobalSettingsProvider;
 use Piwik\AssetManager;
 use Piwik\Common;
 use Piwik\Config;
 use Piwik\Container\StaticContainer;
 use Piwik\DataAccess\ArchiveTableCreator;
+use Piwik\Date;
 use Piwik\Db;
 use Piwik\DbHelper;
 use Piwik\Filesystem;
 use Piwik\Option;
 use Piwik\Piwik;
+use Piwik\Plugin\ControllerAdmin;
 use Piwik\Plugin\Manager;
 use Piwik\Plugins\CoreVue\CoreVue;
 use Piwik\Plugins\Diagnostics\DiagnosticReport;
@@ -42,12 +45,16 @@ use Zend_Db_Adapter_Exception;
 
 /**
  * Installation controller
- *
  */
-class Controller extends \Piwik\Plugin\ControllerAdmin
+class Controller extends ControllerAdmin
 {
     public function __construct()
     {
+        $config = Config::getInstance();
+
+        $this->checkInstallationIsNotExpired($config);
+        $this->setUpInstallationExpiration($config, Date::getNowTimestamp());
+
         parent::__construct();
     }
 
@@ -651,6 +658,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
     {
         $config = Config::getInstance();
         unset($config->General['installation_in_progress']);
+        unset($config->General['installation_first_accessed']);
         $config->forceSave();
     }
 
@@ -732,8 +740,14 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
     private function deleteConfigFileIfNeeded()
     {
         $config = Config::getInstance();
+
         if ($config->existsLocalConfig()) {
+            $firstInstallationAccess = $config->General['installation_first_accessed'];
+            $settingsProvider = StaticContainer::get(GlobalSettingsProvider::class);
+
             $config->deleteLocalConfig();
+            $settingsProvider->reload();
+            $this->setUpInstallationExpiration($config, $firstInstallationAccess);
 
             // deleting the config file removes the salt, which in turns invalidates existing cookies (including the
             // one for selected language), so we re-save that cookie now
@@ -765,5 +779,40 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         $view = new \Piwik\View('@Installation/_systemCheckSection');
         $view->diagnosticReport = $diagnosticReport;
         return $view->render();
+    }
+
+    private function checkInstallationIsNotExpired(Config $config): void
+    {
+        if (
+            empty($config->General['installation_first_accessed'])
+            || !is_numeric($config->General['installation_first_accessed'])
+        ) {
+            return;
+        }
+
+        $firstAccess = (int) $config->General['installation_first_accessed'];
+        $threeDaysAgo = Date::getNowTimestamp() - (3 * 24 * 60 * 60);
+
+        if ($firstAccess < $threeDaysAgo) {
+            throw new Exception('This installation has expired, please delete installation_first_accessed from config.ini.php to reset');
+        }
+    }
+
+    private function setUpInstallationExpiration(Config $config, int $timestamp): void
+    {
+        if (SettingsPiwik::isMatomoInstalled()) {
+            // don't do anything if installation has been completed
+            return;
+        }
+
+        if (
+            !empty($config->General['installation_first_accessed'])
+            && is_numeric($config->General['installation_first_accessed'])
+        ) {
+            return;
+        }
+
+        $config->General['installation_first_accessed'] = $timestamp;
+        $config->forceSave();
     }
 }
