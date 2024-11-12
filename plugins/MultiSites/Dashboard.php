@@ -35,7 +35,10 @@ class Dashboard
      * Array of metrics that will be displayed and will be number formatted
      * @var array
      */
-    private $displayedMetricColumns = ['nb_visits', 'nb_pageviews', 'hits', 'nb_actions', 'revenue'];
+    private $displayedMetricColumns = [
+        'nb_visits', 'nb_pageviews', 'hits', 'nb_actions', 'revenue',
+        'previous_nb_visits', 'previous_nb_pageviews', 'previous_hits', 'previous_nb_actions', 'previous_revenue',
+    ];
 
     /**
      * @param string $period
@@ -111,12 +114,17 @@ class Dashboard
     public function getTotals()
     {
         $totals = [
-            'nb_pageviews'       => $this->sitesByGroup->getMetadata('total_nb_pageviews'),
-            'nb_visits'          => $this->sitesByGroup->getMetadata('total_nb_visits'),
-            'hits'               => $this->sitesByGroup->getMetadata('total_hits'),
-            'nb_actions'         => $this->sitesByGroup->getMetadata('total_nb_actions'),
-            'revenue'            => $this->sitesByGroup->getMetadata('total_revenue'),
-            'nb_visits_lastdate' => $this->sitesByGroup->getMetadata('total_nb_visits_lastdate') ? : 0,
+            'nb_pageviews'          => $this->sitesByGroup->getMetadata('total_nb_pageviews'),
+            'nb_visits'             => $this->sitesByGroup->getMetadata('total_nb_visits'),
+            'hits'                  => $this->sitesByGroup->getMetadata('total_hits'),
+            'nb_actions'            => $this->sitesByGroup->getMetadata('total_nb_actions'),
+            'revenue'               => $this->sitesByGroup->getMetadata('total_revenue'),
+            'previous_nb_pageviews' => $this->sitesByGroup->getMetadata('previous_total_nb_pageviews'),
+            'previous_nb_visits'    => $this->sitesByGroup->getMetadata('previous_total_nb_visits'),
+            'previous_hits'         => $this->sitesByGroup->getMetadata('previous_total_hits'),
+            'previous_nb_actions'   => $this->sitesByGroup->getMetadata('previous_total_nb_actions'),
+            'previous_revenue'      => $this->sitesByGroup->getMetadata('previous_total_revenue'),
+            'nb_visits_lastdate'    => $this->sitesByGroup->getMetadata('total_nb_visits_lastdate') ? : 0,
         ];
         $this->formatMetrics($totals);
         return $totals;
@@ -124,6 +132,10 @@ class Dashboard
 
     private function formatMetrics(&$metrics)
     {
+        if (\Piwik\Request::fromRequest()->getStringParameter('format_metrics', '0') === '0') {
+            return; // do not format metrics if requires unformatted
+        }
+
         $formatter = NumberFormatter::getInstance();
         foreach ($metrics as $metricName => &$value) {
             if (in_array($metricName, $this->displayedMetricColumns)) {

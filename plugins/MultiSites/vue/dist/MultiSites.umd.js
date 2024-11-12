@@ -1584,27 +1584,27 @@ var Dashboard_store_DashboardStore = /*#__PURE__*/function () {
           }
 
           if (_this2.state.value.sortColumn === 'pageviews_evolution') {
-            previousTotal = "".concat(site.previous_Actions_nb_pageviews);
+            previousTotal = "".concat(site.previous_nb_pageviews);
             currentTotal = "".concat(site.nb_pageviews);
             evolution = external_CoreHome_["NumberFormatter"].formatPercent(site.pageviews_evolution);
             metricName = Object(external_CoreHome_["translate"])('General_ColumnPageviews');
-            previousTotalAdjusted = external_CoreHome_["NumberFormatter"].formatNumber(Math.round(parseInt(site.previous_Actions_nb_pageviews, 10) * parseInt(site.ratio, 10)));
+            previousTotalAdjusted = external_CoreHome_["NumberFormatter"].formatNumber(Math.round(parseInt(site.previous_nb_pageviews, 10) * parseInt(site.ratio, 10)));
           }
 
           if (_this2.state.value.sortColumn === 'hits_evolution') {
-            previousTotal = "".concat(site.previous_Actions_hits);
+            previousTotal = "".concat(site.previous_hits);
             currentTotal = "".concat(site.hits);
             evolution = external_CoreHome_["NumberFormatter"].formatPercent(site.hits_evolution);
             metricName = Object(external_CoreHome_["translate"])('General_ColumnHits');
-            previousTotalAdjusted = external_CoreHome_["NumberFormatter"].formatNumber(Math.round(parseInt(site.previous_Actions_hits, 10) * parseInt(site.ratio, 10)));
+            previousTotalAdjusted = external_CoreHome_["NumberFormatter"].formatNumber(Math.round(parseInt(site.previous_hits, 10) * parseInt(site.ratio, 10)));
           }
 
           if (_this2.state.value.sortColumn === 'revenue_evolution') {
-            previousTotal = external_CoreHome_["NumberFormatter"].formatCurrency(site.previous_Goal_revenue, site.currencySymbol);
+            previousTotal = external_CoreHome_["NumberFormatter"].formatCurrency(site.previous_revenue, site.currencySymbol);
             currentTotal = external_CoreHome_["NumberFormatter"].formatCurrency(site.revenue, site.currencySymbol);
             evolution = external_CoreHome_["NumberFormatter"].formatPercent(site.revenue_evolution);
             metricName = Object(external_CoreHome_["translate"])('General_ColumnRevenue');
-            previousTotalAdjusted = external_CoreHome_["NumberFormatter"].formatCurrency(Math.round(parseInt(site.previous_Goal_revenue, 10) * parseInt(site.ratio, 10)), site.currencySymbol);
+            previousTotalAdjusted = external_CoreHome_["NumberFormatter"].formatCurrency(Math.round(parseInt(site.previous_revenue, 10) * parseInt(site.ratio, 10)), site.currencySymbol);
           }
 
           if (metricName) {
