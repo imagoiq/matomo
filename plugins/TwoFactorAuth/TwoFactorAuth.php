@@ -96,6 +96,8 @@ class TwoFactorAuth extends \Piwik\Plugin
         $translations[] = 'TwoFactorAuth_SetupFinishedSubtitle';
         $translations[] = 'General_Continue';
         $translations[] = 'TwoFactorAuth_Verify';
+        $translations[] = 'TwoFactorAuth_ShowTwoFAQRCode';
+        $translations[] = 'TwoFactorAuth_HideTwoFAQRCode';
     }
 
     public function getStylesheetFiles(&$stylesheets)
