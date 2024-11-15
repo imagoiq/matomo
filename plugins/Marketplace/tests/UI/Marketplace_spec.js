@@ -151,7 +151,7 @@ describe("Marketplace", function () {
                   await page.goto('about:blank');
                   await page.goto(urls[key]);
 
-                  await captureMarketplace('paid_plugins_with_license_' + key + '_' + mode);
+                  await captureSelector('paid_plugins_with_license_' + key + '_' + mode, '.pageWrap');
               });
 
 
