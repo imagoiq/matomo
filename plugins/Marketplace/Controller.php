@@ -233,7 +233,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         }
     }
 
-    public function getPaidPluginsToInstallAtOnceData(array $paidPlugins): array
+    private function getPaidPluginsToInstallAtOnceData(array $paidPlugins): array
     {
         $paidPluginsToInstallAtOnce = [];
         if (SettingsPiwik::isAutoUpdatePossible()) {
