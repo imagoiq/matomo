@@ -144,15 +144,24 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
 
     public function manageLicenseKey()
     {
-        $marketplace = StaticContainer::get('Piwik\Plugins\Marketplace\Marketplace');
         Piwik::checkUserHasSuperUserAccess();
 
         return $this->renderTemplate('@Marketplace/manageLicenseKey', array(
             'hasValidLicenseKey' => $this->licenseKey->has() && $this->consumer->isValidConsumer(),
-            'paidPluginsToInstallAtOnce' => $marketplace->getPaidPluginsToInstallAtOnce(),
-            'isInstallAllPaidPluginsVisible' => $marketplace->isInstallAllPaidPluginsVisible(),
-            'installAllPluginsNonce' =>  Nonce::getNonce(self::INSTALL_NONCE),
         ));
+    }
+
+    public function getPaidPluginsToInstallAtOnceParams()
+    {
+        Piwik::checkUserHasSuperUserAccess();
+        if (!$this->isInstallAllPaidPluginsVisible()) {
+            return '';
+        }
+
+        return json_encode([
+            'paidPluginsToInstallAtOnce' => $this->getAllPaidPluginsToInstallAtOnce(),
+            'installAllPluginsNonce' => Nonce::getNonce(self::INSTALL_NONCE),
+        ], JSON_HEX_APOS);
     }
 
     private function getPrettyLongDate($date)
@@ -258,7 +267,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
             'premium' => count($paidPlugins),
         ];
 
-        $view->paidPluginsToInstallAtOnce = $this->getPaidPluginsToInstallAtOnceData($paidPlugins);
+        $view->paidPluginsToInstallAtOnce = $this->getAllPaidPluginsToInstallAtOnce();
         $view->isValidConsumer = $this->consumer->isValidConsumer();
         $view->pluginTypeOptions = array(
             'plugins' => Piwik::translate('General_Plugins'),
@@ -574,5 +583,23 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         $view->errorMessage = '';
 
         return $view;
+    }
+
+    private function isInstallAllPaidPluginsVisible(): bool
+    {
+        return (
+            $this->consumer->isValidConsumer() &&
+            Piwik::hasUserSuperUserAccess() &&
+            SettingsPiwik::isAutoUpdatePossible() &&
+            CorePluginsAdmin::isPluginsAdminEnabled() &&
+            count($this->getAllPaidPluginsToInstallAtOnce()) > 0
+        );
+    }
+
+    private function getAllPaidPluginsToInstallAtOnce()
+    {
+        $paidPlugins = $this->plugins->getAllPaidPlugins();
+
+        return $this->getPaidPluginsToInstallAtOnceData($paidPlugins);
     }
 }

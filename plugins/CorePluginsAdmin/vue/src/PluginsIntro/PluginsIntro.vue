@@ -28,12 +28,8 @@
       <span v-html="$sanitize(changeLookByManageThemesText)"></span>
     </p>
   </div>
-  <div v-if="isInstallAllPaidPluginsVisible">
-    <InstallAllPaidPluginsButton
-      :paid-plugins-to-install-at-once="paidPluginsToInstallAtOnce"
-      :install-nonce="installAllPluginsNonce"
-    />
-  </div>
+  <InstallAllPaidPluginsButton
+  />
 </template>
 
 <script lang="ts">
@@ -51,12 +47,6 @@ export default defineComponent({
     isMarketplaceEnabled: Boolean,
     isPluginUploadEnabled: Boolean,
     isPluginsAdminEnabled: Boolean,
-    isInstallAllPaidPluginsVisible: Boolean,
-    installAllPluginsNonce: String,
-    paidPluginsToInstallAtOnce: {
-      type: Array,
-      required: true,
-    },
   },
   components: {
     EnrichedHeadline,

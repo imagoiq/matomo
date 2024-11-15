@@ -6,7 +6,6 @@
  */
 
 export { default as Marketplace } from './Marketplace/Marketplace.vue';
-export { default as InstallAllPaidPluginsButton } from './InstallAllPaidPluginsButton/InstallAllPaidPluginsButton.vue';
 export { default as ManageLicenseKey } from './ManageLicenseKey/ManageLicenseKey.vue';
 export { default as GetNewPlugins } from './GetNewPlugins/GetNewPlugins.vue';
 export { default as GetNewPluginsAdmin } from './GetNewPluginsAdmin/GetNewPluginsAdmin.vue';
@@ -16,3 +15,4 @@ export { default as OverviewIntro } from './OverviewIntro/OverviewIntro.vue';
 export { default as SubscriptionOverview } from './SubscriptionOverview/SubscriptionOverview.vue';
 export { default as RichMenuButton } from './RichMenuButton/RichMenuButton.vue';
 export { default as PluginList } from './PluginList/PluginList.vue';
+export { default as InstallAllPaidPluginsButton } from './InstallAllPaidPluginsButton/InstallAllPaidPluginsButton.vue';

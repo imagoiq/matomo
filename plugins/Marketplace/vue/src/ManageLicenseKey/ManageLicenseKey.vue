@@ -12,12 +12,8 @@
   >
     <div class="manage-license-key-intro" v-html="$sanitize(manageLicenseKeyIntro)"></div>
 
-    <div v-if="isInstallAllPaidPluginsVisible && hasValidLicense">
-      <InstallAllPaidPluginsButton
-        :paid-plugins-to-install-at-once="paidPluginsToInstallAtOnce"
-        :install-nonce="installAllPluginsNonce"
-      />
-    </div>
+    <InstallAllPaidPluginsButton
+    />
 
     <div class="manage-license-key-input">
       <Field
@@ -77,12 +73,6 @@ interface LicenseKeyState {
 export default defineComponent({
   props: {
     hasValidLicenseKey: Boolean,
-    isInstallAllPaidPluginsVisible: Boolean,
-    installAllPluginsNonce: String,
-    paidPluginsToInstallAtOnce: {
-      type: Array,
-      required: true,
-    },
   },
   components: {
     Field,

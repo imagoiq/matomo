@@ -139,27 +139,44 @@ describe("Marketplace", function () {
         });
 
         if (mode === 'superuser') {
-            it(mode + ' for a user with license key should be able to open install purchased plugins modal', async function () {
-                setEnvironment(mode, validLicense);
+            var urls = {
+              'paidPluginsUrl': paidPluginsUrl,
+              'manageLicenseKeyUrl': '?module=Marketplace&action=manageLicenseKey&idSite=1&period=day&date=yesterday',
+              'managePluginsUrl': '?module=CorePluginsAdmin&action=plugins&idSite=1&period=day&date=yesterday'
+            };
+            for (var key in urls) {
+              it(mode + ' for a user with license key should be able to open paid plugins', async function() {
+                  setEnvironment(mode, validLicense);
 
-                await page.goto('about:blank');
-                await page.goto(paidPluginsUrl);
+                  await page.goto('about:blank');
+                  await page.goto(urls[key]);
 
-                const elem = await page.jQuery(
+                  await captureMarketplace('paid_plugins_with_license_' + key + '_' + mode);
+              });
+
+
+              it(mode + ' for a user with license key should be able to open install purchased plugins modal for ' + key, async function () {
+                  setEnvironment(mode, validLicense);
+
+                  await page.goto('about:blank');
+                  await page.goto(urls[key]);
+
+                  const elem = await page.jQuery(
                     '.installAllPaidPlugins button'
-                );
+                  );
 
-                await elem.click();
+                  await elem.click();
 
-                // give it some time to fetch, animate, and render everything properly
-                await page.waitForNetworkIdle();
-                await page.waitForTimeout(500);
+                  // give it some time to fetch, animate, and render everything properly
+                  await page.waitForNetworkIdle();
+                  await page.waitForTimeout(500);
 
-                const selector = '.modal.open';
-                await page.screenshotSelector(selector);
+                  const selector = '.modal.open';
+                  await page.screenshotSelector(selector);
 
-                expect(await page.screenshotSelector(selector)).to.matchImage('install_purchased_plugins_modal_' + mode);
-            });
+                  expect(await page.screenshotSelector(selector)).to.matchImage('install_purchased_plugins_modal_' + key + '_' + mode);
+              });
+          }
         }
 
         it(mode + ' should open paid plugins modal for paid plugin 1', async function () {
