@@ -172,9 +172,8 @@ describe("Marketplace", function () {
                   await page.waitForTimeout(500);
 
                   const selector = '.modal.open';
-                  await page.screenshotSelector(selector);
 
-                  expect(await page.screenshotSelector(selector)).to.matchImage('install_purchased_plugins_modal_' + key + '_' + mode);
+                  await captureSelector('install_purchased_plugins_modal_' + key + '_' + mode, selector);
               });
           }
         }
