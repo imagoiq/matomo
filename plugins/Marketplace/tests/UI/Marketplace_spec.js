@@ -145,7 +145,7 @@ describe("Marketplace", function () {
               'managePluginsUrl': '?module=CorePluginsAdmin&action=plugins&idSite=1&period=day&date=yesterday'
             };
             for (var key in urls) {
-              it(mode + ' for a user with license key should be able to open paid plugins', async function() {
+              it(mode + ' for a user with license key should be able to open paid plugins', async() => {
                   setEnvironment(mode, validLicense);
 
                   await page.goto('about:blank');
@@ -155,7 +155,7 @@ describe("Marketplace", function () {
               });
 
 
-              it(mode + ' for a user with license key should be able to open install purchased plugins modal for ' + key, async function () {
+              it(mode + ' for a user with license key should be able to open install purchased plugins modal for ' + key, async() => {
                   setEnvironment(mode, validLicense);
 
                   await page.goto('about:blank');
