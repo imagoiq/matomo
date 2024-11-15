@@ -8,7 +8,7 @@
 <template>
   <div v-if="paidPluginsToInstallAtOnceArray.length">
     <button
-      class="btn"
+      class="btn installAllPaidPluginsAtOnceButton"
       @click.prevent="onInstallAllPaidPlugins()"
       :disabled="disabled"
     >
@@ -88,14 +88,14 @@ export default defineComponent({
     };
   },
   created() {
-    if (!this.installNonceValue) {
+    if (!this.installNonceValue && Matomo.hasSuperUserAccess) {
       AjaxHelper.fetch({
         module: 'Marketplace',
         action: 'getPaidPluginsToInstallAtOnceParams',
       }).then((response) => {
         if (response) {
-          this.paidPluginsToInstallAtOnceArray = response.paidPluginsToInstallAtOnce;
-          this.installNonceValue = response.installAllPluginsNonce;
+          this.paidPluginsToInstallAtOnceArray = response.paidPluginsToInstallAtOnce ?? [];
+          this.installNonceValue = response.installAllPluginsNonce ?? '';
         }
       });
     }

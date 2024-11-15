@@ -155,7 +155,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
     {
         Piwik::checkUserHasSuperUserAccess();
         if (!$this->isInstallAllPaidPluginsVisible()) {
-            return '';
+            return json_encode([]);
         }
 
         return json_encode([

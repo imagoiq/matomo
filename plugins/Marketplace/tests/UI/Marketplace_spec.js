@@ -162,7 +162,7 @@ describe("Marketplace", function () {
                   await page.goto(urls[key]);
 
                   const elem = await page.jQuery(
-                    '.installAllPaidPlugins button'
+                    '.installAllPaidPluginsAtOnceButton.btn'
                   );
 
                   await elem.click();
