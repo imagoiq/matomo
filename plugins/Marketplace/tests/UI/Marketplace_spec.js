@@ -139,23 +139,21 @@ describe("Marketplace", function () {
         });
 
         if (mode === 'superuser') {
-            var urls = {
-              'paidPluginsUrl': paidPluginsUrl,
-              'manageLicenseKeyUrl': '?module=Marketplace&action=manageLicenseKey&idSite=1&period=day&date=yesterday',
-              'managePluginsUrl': '?module=CorePluginsAdmin&action=plugins&idSite=1&period=day&date=yesterday'
-            };
-            for (var key in urls) {
+          [paidPluginsUrl, '?module=Marketplace&action=manageLicenseKey&idSite=1&period=day&date=yesterday', '?module=CorePluginsAdmin&action=plugins&idSite=1&period=day&date=yesterday'].
+            .forEach(function (url, index) {
               it(mode + ' for a user with license key should be able to open paid plugins', async() => {
+                  var indexArray = ['paidPluginsUrl', 'manageLicenseKeyUrl', 'managePluginsUrl'];
                   setEnvironment(mode, validLicense);
 
                   await page.goto('about:blank');
-                  await page.goto(urls[key]);
+                  await page.goto(url);
 
-                  await captureSelector('paid_plugins_with_license_' + key + '_' + mode, '.pageWrap');
+                  await captureSelector('paid_plugins_with_license_' + indexArray[index] + '_' + mode, '.pageWrap');
               });
 
 
               it(mode + ' for a user with license key should be able to open install purchased plugins modal for ' + key, async() => {
+                  var indexArray = ['paidPluginsUrl', 'manageLicenseKeyUrl', 'managePluginsUrl'];
                   setEnvironment(mode, validLicense);
 
                   await page.goto('about:blank');
@@ -173,9 +171,9 @@ describe("Marketplace", function () {
 
                   const selector = '.modal.open';
 
-                  await captureSelector('install_purchased_plugins_modal_' + key + '_' + mode, selector);
+                  await captureSelector('install_purchased_plugins_modal_' + indexArray[index] + '_' + mode, selector);
               });
-          }
+            });
         }
 
         it(mode + ' should open paid plugins modal for paid plugin 1', async function () {
