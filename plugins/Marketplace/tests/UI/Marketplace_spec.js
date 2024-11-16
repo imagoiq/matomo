@@ -139,7 +139,7 @@ describe("Marketplace", function () {
         });
 
         if (mode === 'superuser') {
-          [paidPluginsUrl, '?module=Marketplace&action=manageLicenseKey&idSite=1&period=day&date=yesterday', '?module=CorePluginsAdmin&action=plugins&idSite=1&period=day&date=yesterday'].
+          [paidPluginsUrl, '?module=Marketplace&action=manageLicenseKey&idSite=1&period=day&date=yesterday', '?module=CorePluginsAdmin&action=plugins&idSite=1&period=day&date=yesterday']
             .forEach(function (url, index) {
               it(mode + ' for a user with license key should be able to open paid plugins', async() => {
                   var indexArray = ['paidPluginsUrl', 'manageLicenseKeyUrl', 'managePluginsUrl'];
