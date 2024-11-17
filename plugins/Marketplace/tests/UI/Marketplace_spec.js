@@ -157,7 +157,7 @@ describe("Marketplace", function () {
                   setEnvironment(mode, validLicense);
 
                   await page.goto('about:blank');
-                  await page.goto(urls[key]);
+                  await page.goto(url);
 
                   const elem = await page.jQuery(
                     '.installAllPaidPluginsAtOnceButton.btn'
