@@ -141,7 +141,7 @@ describe("Marketplace", function () {
         if (mode === 'superuser') {
           [paidPluginsUrl, '?module=Marketplace&action=manageLicenseKey&idSite=1&period=day&date=yesterday', '?module=CorePluginsAdmin&action=plugins&idSite=1&period=day&date=yesterday']
             .forEach(function (url, index) {
-              it(mode + ' for a user with license key should be able to open paid plugins', async() => {
+              it(mode + ' for a user with license key should be able to open paid plugins ' + index, async() => {
                   var indexArray = ['paidPluginsUrl', 'manageLicenseKeyUrl', 'managePluginsUrl'];
                   setEnvironment(mode, validLicense);
 
@@ -152,7 +152,7 @@ describe("Marketplace", function () {
               });
 
 
-              it(mode + ' for a user with license key should be able to open install purchased plugins modal for ' + key, async() => {
+              it(mode + ' for a user with license key should be able to open install purchased plugins modal for ' + index, async() => {
                   var indexArray = ['paidPluginsUrl', 'manageLicenseKeyUrl', 'managePluginsUrl'];
                   setEnvironment(mode, validLicense);
 
