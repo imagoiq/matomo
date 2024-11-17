@@ -158,6 +158,8 @@ describe("Marketplace", function () {
 
                   await page.goto('about:blank');
                   await page.goto(url);
+                  await page.waitForNetworkIdle();
+                  await page.waitForTimeout(500);
 
                   const elem = await page.jQuery(
                     '.installAllPaidPluginsAtOnceButton.btn'
