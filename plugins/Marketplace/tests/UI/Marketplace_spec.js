@@ -158,6 +158,7 @@ describe("Marketplace", function () {
 
                   await page.goto('about:blank');
                   await page.goto(url);
+                  await page.reload();
                   await page.waitForNetworkIdle();
                   await page.waitForTimeout(500);
 
@@ -169,7 +170,7 @@ describe("Marketplace", function () {
 
                   // give it some time to fetch, animate, and render everything properly
                   await page.waitForNetworkIdle();
-                  await page.waitForTimeout(1000);
+                  await page.waitForTimeout(500);
 
                   const selector = '.modal.open';
 
