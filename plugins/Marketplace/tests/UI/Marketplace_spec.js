@@ -171,9 +171,8 @@ describe("Marketplace", function () {
                   await page.waitForNetworkIdle();
                   await page.waitForTimeout(500);
 
-                  const selector = '.modal.open';
-
-                  await captureSelector('install_purchased_plugins_modal_' + indexArray[index] + '_' + mode, selector);
+                  const pageElement = await page.$('.modal.open');
+                  expect(await pageElement.screenshot()).to.matchImage('install_purchased_plugins_modal_' + indexArray[index] + '_' + mode);
               });
             });
         }
