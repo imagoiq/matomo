@@ -26,8 +26,6 @@
 
     <div class="installAllPaidPlugins" v-if="installAllPaidPluginsVisible">
       <InstallAllPaidPluginsButton
-        :paid-plugins-to-install-at-once="getPaidPluginsToInstallAtOnce"
-        :install-nonce="installNonce"
         :disabled="installDisabled"
         :loading="installLoading"
       />
