@@ -63,9 +63,9 @@ import {
   AjaxHelper,
   ContentIntro, EnrichedHeadline, MatomoUrl,
 } from 'CoreHome';
+import { InstallAllPaidPluginsButton } from 'CorePluginsAdmin';
 import Marketplace from '../Marketplace/Marketplace.vue';
-import InstallAllPaidPluginsButton
-  from '../InstallAllPaidPluginsButton/InstallAllPaidPluginsButton.vue';
+
 import { TObject, TObjectArray } from '../types';
 
 interface OverviewIntroState {

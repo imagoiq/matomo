@@ -60,9 +60,7 @@ import {
   NotificationsStore,
   externalLink,
 } from 'CoreHome';
-import { Field, SaveButton } from 'CorePluginsAdmin';
-import InstallAllPaidPluginsButton
-  from '../InstallAllPaidPluginsButton/InstallAllPaidPluginsButton.vue';
+import { Field, SaveButton, InstallAllPaidPluginsButton } from 'CorePluginsAdmin';
 
 interface LicenseKeyState {
   licenseKey: string;

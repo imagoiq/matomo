@@ -154,6 +154,8 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
     public function getPaidPluginsToInstallAtOnceParams()
     {
         Piwik::checkUserHasSuperUserAccess();
+        Json::sendHeaderJSON();
+
         if (!$this->isInstallAllPaidPluginsVisible()) {
             return json_encode([]);
         }

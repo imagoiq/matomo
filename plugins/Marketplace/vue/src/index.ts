@@ -15,4 +15,3 @@ export { default as OverviewIntro } from './OverviewIntro/OverviewIntro.vue';
 export { default as SubscriptionOverview } from './SubscriptionOverview/SubscriptionOverview.vue';
 export { default as RichMenuButton } from './RichMenuButton/RichMenuButton.vue';
 export { default as PluginList } from './PluginList/PluginList.vue';
-export { default as InstallAllPaidPluginsButton } from './InstallAllPaidPluginsButton/InstallAllPaidPluginsButton.vue';

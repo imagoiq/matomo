@@ -40,7 +40,8 @@ import {
   translate,
   MatomoUrl,
 } from 'CoreHome';
-import InstallAllPaidPluginsButton from '../../../../Marketplace/vue/src/InstallAllPaidPluginsButton/InstallAllPaidPluginsButton.vue';
+import InstallAllPaidPluginsButton
+  from '../InstallAllPaidPluginsButton/InstallAllPaidPluginsButton.vue';
 
 export default defineComponent({
   props: {
