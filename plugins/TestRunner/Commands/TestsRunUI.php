@@ -97,8 +97,8 @@ class TestsRunUI extends ConsoleCommand
             $options[] = "--assume-artifacts";
         }
 
-        if (!$plugin) {
-            $options[] = "--plugin=Overlay";
+        if ($plugin) {
+            $options[] = "--plugin=" . $plugin;
         }
 
         if ($core) {
