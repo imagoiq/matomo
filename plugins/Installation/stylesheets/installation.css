@@ -158,9 +158,9 @@ p.next-step:first-child {
     font-size: 1.6em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    display:inline-block;
-    margin-left:4px;
-    float:left;
+    display: inline-block;
+    margin-left: 3px;
+    float: left;
 }
 
 .copyToClipboardIcon:before {
@@ -176,9 +176,9 @@ p.next-step:first-child {
     font-size: 1.6em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    display:inline-block;
-    margin-left:4px;
-    float:left;
+    display: inline-block;
+    margin-left: 2px;
+    float: left;
 }
 
 .copyToClipboardIconCheck:before {
