@@ -43,8 +43,6 @@ class TestsRunUI extends ConsoleCommand
 
     protected function doExecute(): int
     {
-        exec('sudo date --set="2024-11-01 12:00:00"');
-
         $input = $this->getInput();
         $output = $this->getOutput();
         $specs = $input->getArgument('specs');
