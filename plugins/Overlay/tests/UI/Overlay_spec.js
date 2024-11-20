@@ -75,15 +75,16 @@ describe("Overlay", function () {
 
         await removeOptOutIframe(popup);
 
-        expect(await popup.screenshot({fullPage: true})).to.matchImage('loaded_from_actions');
-        await popup.waitForSelector('.overlayMetrics', {visible: true});
+        await popup.waitForSelector('#overlayLoading', {hidden: true});
         await popup.click('#overlayDateRangeSelection');
 
         // Select yesterday
         await popup.waitForSelector('#overlayDateRangeSelection .select-dropdown li:nth-child(2)', {visible: true});
         await popup.click('#overlayDateRangeSelection .select-dropdown li:nth-child(2)');
+        await page.waitForNetworkIdle();
+        await popup.waitForSelector('#overlayLoading', {hidden: true});
 
-        await popup.waitForSelector('.overlayMetrics', {visible: true});
+        expect(await popup.screenshot({fullPage: true})).to.matchImage('loaded_from_actions');
     });
 
 });
